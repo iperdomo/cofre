@@ -1,3 +1,6 @@
+*.project
+*.classpath
+
 clojure/bin
 clojure/target
 clojure/classes
@@ -10,3 +13,6 @@ clojure/.lein-deps-sum
 clojure/.lein-failures
 clojure/.lein-plugins
 clojure/.lein-repl-history
+
+android/bin
+android/gen
