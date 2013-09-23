@@ -1,5 +1,6 @@
 *.project
 *.classpath
+*tmp*
 
 clojure/bin
 clojure/target
