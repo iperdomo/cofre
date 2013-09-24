@@ -1,0 +1,8 @@
+# Uncomment the following properties to enable HTTP basic authentication
+# NOTE: Authentication is handled by a server like Ngnix or Apache
+ 
+# authentication = basic
+# username = user
+# password = pazzw0rD
+
+server = https://localhost:3000/

@@ -18,15 +18,20 @@ package me.perdomo.cofre;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.Authenticator;
 import java.net.HttpURLConnection;
+import java.net.PasswordAuthentication;
 import java.net.URL;
+import java.util.Properties;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.ExifInterface;
@@ -42,8 +47,14 @@ public class ShareActivity extends Activity {
 
 	private static final String BOUNDARY = "cofre";
 	private static final String EOL = "\r\n";
-	private static final String HOST = "http://192.168.1.49:3000";
-	private static final int TIMEOUT = 5000;
+	private static final int TIMEOUT = 1000 * 60; // 1min
+
+	private static final String PROP_FILE = "cofre.properties";
+	private static final String AUTH_PROP = "authentication";
+	private static final String BASIC_HTTP_AUTH = "basic";
+	private static final String USR_PROP = "username";
+	private static final String PWD_PROP = "password";
+	private static final String SERVER_PROP = "server";
 
 	@Override
 	protected void onCreate(Bundle paramBundle) {
@@ -109,7 +120,28 @@ public class ShareActivity extends Activity {
 
 		private String compressAndUpload(Bitmap image) {
 			try {
-				final URL url = new URL(HOST);
+
+				final AssetManager assets = getResources().getAssets();
+				final InputStream is = assets.open(PROP_FILE);
+				final Properties props = new Properties();
+				props.load(is);
+
+				final String auth = props.getProperty(AUTH_PROP);
+
+				if (BASIC_HTTP_AUTH.equals(auth)) {
+					final String usr = props.getProperty(USR_PROP);
+					final String pwd = props.getProperty(PWD_PROP);
+					Authenticator.setDefault(new Authenticator() {
+						@Override
+						protected PasswordAuthentication getPasswordAuthentication() {
+							return new PasswordAuthentication(usr, pwd
+									.toCharArray());
+						}
+					});
+				}
+
+				final String server = props.getProperty(SERVER_PROP);
+				final URL url = new URL(server);
 				final HttpURLConnection conn = (HttpURLConnection) url
 						.openConnection();
 
@@ -155,7 +187,7 @@ public class ShareActivity extends Activity {
 				reader.close();
 				conn.disconnect();
 
-				return HOST + "/" + response;
+				return server + response;
 			} catch (Exception e) {
 				e.printStackTrace(); // TODO: Better exception handling
 			}

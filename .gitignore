@@ -18,3 +18,4 @@ clojure/.lein-repl-history
 
 android/bin
 android/gen
+android/assets/*.properties
