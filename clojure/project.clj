@@ -9,4 +9,5 @@
                  [ring/ring-jetty-adapter "1.2.0"]
                  [compojure "1.1.5"]]
 
-  :main me.perdomo.cofre.http)
+  :main me.perdomo.cofre.http
+  :aot [me.perdomo.cofre.http])
