@@ -5,7 +5,8 @@
             [ring.adapter.jetty :refer (run-jetty)]
             [ring.util.response :refer (response content-type not-found file-response)]
             [compojure.core :refer (defroutes GET POST)])
-  (:import java.util.UUID))
+  (:import java.util.UUID)
+  (:gen-class))
 
 (defn- get-file-name []
   (let [name (str (UUID/randomUUID))]
