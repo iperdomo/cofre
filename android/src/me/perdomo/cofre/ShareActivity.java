@@ -30,6 +30,7 @@ import java.net.URL;
 import java.util.Properties;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.database.Cursor;
@@ -56,6 +57,8 @@ public class ShareActivity extends Activity {
 	private static final String PWD_PROP = "password";
 	private static final String SERVER_PROP = "server";
 
+	private ProgressDialog progress;
+
 	@Override
 	protected void onCreate(Bundle paramBundle) {
 		super.onCreate(paramBundle);
@@ -63,6 +66,11 @@ public class ShareActivity extends Activity {
 		final Intent intent = getIntent();
 		final String action = intent.getAction();
 		final String type = intent.getType();
+
+		progress = new ProgressDialog(ShareActivity.this);
+		progress.setTitle(R.string.uploading);
+		progress.setIndeterminate(true);
+		progress.setCancelable(false);
 
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
 		if (!cm.getActiveNetworkInfo().isConnected()) {
@@ -86,8 +94,14 @@ public class ShareActivity extends Activity {
 	private class UploadImageTask extends AsyncTask<Uri, Integer, String> {
 
 		@Override
+		protected void onPreExecute() {
+			progress.show();
+		}
+
+		@Override
 		protected String doInBackground(Uri... uri) {
 			final String path = getRealPathFromURI(uri[0]);
+
 			try {
 				final ExifInterface exif = new ExifInterface(path);
 				int w = 800;
@@ -111,10 +125,13 @@ public class ShareActivity extends Activity {
 			if (paramString == null) {
 				return;
 			}
+
+			progress.dismiss();
+
 			ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 			cm.setText(paramString);
 			Toast t = Toast.makeText(getApplicationContext(),
-					"Dirección lista en el clipboard", Toast.LENGTH_LONG);
+					R.string.clipboard_ready, Toast.LENGTH_LONG);
 			t.show();
 		}
 
