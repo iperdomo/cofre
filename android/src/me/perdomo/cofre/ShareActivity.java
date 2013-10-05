@@ -191,7 +191,7 @@ public class ShareActivity extends Activity {
 				writer.write(header.toString());
 				writer.flush();
 
-				image.compress(Bitmap.CompressFormat.JPEG, 95, os);
+				image.compress(Bitmap.CompressFormat.JPEG, 91, os);
 				os.flush();
 
 				writer.write(footer.toString());
