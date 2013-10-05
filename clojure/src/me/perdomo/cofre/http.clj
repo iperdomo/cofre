@@ -5,12 +5,10 @@
             [ring.adapter.jetty :refer (run-jetty)]
             [ring.util.response :refer (response content-type not-found file-response)]
             [compojure.core :refer (defroutes GET POST)])
-  (:import java.util.UUID)
   (:gen-class))
 
 (defn- get-file-name []
-  (let [name (str (UUID/randomUUID))]
-    (.replaceAll name "-" "")))
+  (Long/toString (System/nanoTime) 36))
 
 (defn- copy-file [tempfile]
   (let [fname (get-file-name)
