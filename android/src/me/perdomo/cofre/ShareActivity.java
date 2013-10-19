@@ -56,6 +56,9 @@ public class ShareActivity extends Activity {
 	private static final String USR_PROP = "username";
 	private static final String PWD_PROP = "password";
 	private static final String SERVER_PROP = "server";
+	private static final int IMG_QUALITY = 95;
+	private static final int IMG_WIDTH = 640;
+	private static final int IMG_HEIGHT = 480;
 
 	private ProgressDialog progress;
 
@@ -69,6 +72,7 @@ public class ShareActivity extends Activity {
 
 		progress = new ProgressDialog(ShareActivity.this);
 		progress.setTitle(R.string.uploading);
+		progress.setMessage(getString(R.string.wait));
 		progress.setIndeterminate(true);
 		progress.setCancelable(false);
 
@@ -101,18 +105,16 @@ public class ShareActivity extends Activity {
 		@Override
 		protected String doInBackground(Uri... uri) {
 			final String path = getRealPathFromURI(uri[0]);
-
 			try {
 				final ExifInterface exif = new ExifInterface(path);
-				int w = 800;
-				int h = 600;
 				if (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
 						ExifInterface.ORIENTATION_UNDEFINED) != ExifInterface.ORIENTATION_UNDEFINED) {
-					w = 600;
-					h = 800;
+					compressAndUpload(ImageResizer.decodeSampledBitmapFromFile(
+							path, IMG_HEIGHT, IMG_WIDTH));
 				}
 				return compressAndUpload(ImageResizer
-						.decodeSampledBitmapFromFile(path, w, h));
+						.decodeSampledBitmapFromFile(path, IMG_WIDTH,
+								IMG_HEIGHT));
 			} catch (IOException e) {
 				e.printStackTrace(); // TODO: Better exception handling
 			}
@@ -191,7 +193,7 @@ public class ShareActivity extends Activity {
 				writer.write(header.toString());
 				writer.flush();
 
-				image.compress(Bitmap.CompressFormat.JPEG, 91, os);
+				image.compress(Bitmap.CompressFormat.JPEG, IMG_QUALITY, os);
 				os.flush();
 
 				writer.write(footer.toString());
