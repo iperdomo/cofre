@@ -108,8 +108,8 @@ public class ShareActivity extends Activity {
 			try {
 				final ExifInterface exif = new ExifInterface(path);
 				if (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
-						ExifInterface.ORIENTATION_UNDEFINED) != ExifInterface.ORIENTATION_UNDEFINED) {
-					compressAndUpload(ImageResizer.decodeSampledBitmapFromFile(
+						ExifInterface.ORIENTATION_UNDEFINED) == ExifInterface.ORIENTATION_ROTATE_90) {
+					return compressAndUpload(ImageResizer.decodeSampledBitmapFromFile(
 							path, IMG_HEIGHT, IMG_WIDTH));
 				}
 				return compressAndUpload(ImageResizer

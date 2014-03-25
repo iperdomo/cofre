@@ -1,4 +1,4 @@
-(defproject me.perdomo.cofre "0.2.0"
+(defproject me.perdomo.cofre "0.3.0"
   :description "Small HTTP server to process image upload/get requests"
   :url "http://github.com/iperdomo/cofre"
   :license {:name "Apache Public License 2.0"

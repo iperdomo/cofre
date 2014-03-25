@@ -16,8 +16,12 @@
 
 package me.perdomo.cofre;
 
+import java.io.IOException;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 
 /**
  * A simple subclass of {@link ImageWorker} that resizes images from resources given a target width
@@ -50,7 +54,25 @@ public class ImageResizer {
 
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeFile(filename, options);
+
+        final Bitmap bm = BitmapFactory.decodeFile(filename, options);
+
+        try {
+            final ExifInterface exif = new ExifInterface(filename);
+
+            if (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                ExifInterface.ORIENTATION_UNDEFINED) == ExifInterface.ORIENTATION_ROTATE_90) {
+
+                final Matrix mat = new Matrix();
+                mat.postRotate(90);
+
+                return Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), mat, true);
+           }
+		} catch (IOException e) {
+			//no-op
+		}
+
+        return bm;
     }
 
 

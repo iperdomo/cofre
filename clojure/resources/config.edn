@@ -1,0 +1,4 @@
+{
+ :header "Some header" ;; A fixed header
+ :footer "Your name" ;; This will turn into a footer: (c) YEAR Your name
+}
