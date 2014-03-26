@@ -48,7 +48,7 @@ public class ShareActivity extends Activity {
 
 	private static final String BOUNDARY = "cofre";
 	private static final String EOL = "\r\n";
-	private static final int TIMEOUT = 1000 * 60; // 1min
+	private static final int TIMEOUT = 1000 * 60 * 2; // 2min
 
 	private static final String PROP_FILE = "cofre.properties";
 	private static final String AUTH_PROP = "authentication";
@@ -109,8 +109,9 @@ public class ShareActivity extends Activity {
 				final ExifInterface exif = new ExifInterface(path);
 				if (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
 						ExifInterface.ORIENTATION_UNDEFINED) == ExifInterface.ORIENTATION_ROTATE_90) {
-					return compressAndUpload(ImageResizer.decodeSampledBitmapFromFile(
-							path, IMG_HEIGHT, IMG_WIDTH));
+					return compressAndUpload(ImageResizer
+							.decodeSampledBitmapFromFile(path, IMG_HEIGHT,
+									IMG_WIDTH));
 				}
 				return compressAndUpload(ImageResizer
 						.decodeSampledBitmapFromFile(path, IMG_WIDTH,
@@ -124,16 +125,17 @@ public class ShareActivity extends Activity {
 		@Override
 		protected void onPostExecute(String paramString) {
 			super.onPostExecute(paramString);
-			if (paramString == null) {
-				return;
-			}
 
 			progress.dismiss();
 
-			ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-			cm.setText(paramString);
+			if (paramString != null) {
+				ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+				cm.setText(paramString);
+			}
+
 			Toast t = Toast.makeText(getApplicationContext(),
-					R.string.clipboard_ready, Toast.LENGTH_LONG);
+					paramString == null ? R.string.error_uploading
+							: R.string.clipboard_ready, Toast.LENGTH_LONG);
 			t.show();
 		}
 
@@ -216,7 +218,7 @@ public class ShareActivity extends Activity {
 
 		/**
 		 * Extracted from http://stackoverflow.com/a/13209514
-		 * 
+		 *
 		 * @author Chirag Raval
 		 */
 

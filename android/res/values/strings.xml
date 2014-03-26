@@ -5,5 +5,5 @@
     <string name="uploading">Uploading</string>
     <string name="wait">Please wait</string>
     <string name="clipboard_ready">Link ready in the clipboard, just paste it!</string>
-
+    <string name="error_uploading">Ooops! Error uploading image. Try again later</string>
 </resources>
